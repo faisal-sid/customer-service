@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+
 import pytest
 
 from customer_service.model.customer import Customer
@@ -32,6 +33,31 @@ def test_get_customer_not_found(get_customer, web_client):
     assert response.is_json
     assert response.status_code == 404
     assert response.get_json() == dict(message='Customer not found')
+
+
+@patch('customer_service.model.commands.update_customer')
+def test_update_customer(update_customer, web_client, customer_repository):
+    request_body = dict(firstName='Gene', surname='Sid', cid='000000')
+    response = web_client.put('/customers/000000', json=request_body)
+
+    update_customer.assert_called_with(
+        first_name='Gene',
+        surname='Sid',
+        cid='000000',
+        customer_repository=customer_repository)
+
+    assert response.is_json
+    assert response.status_code == 200
+    assert response.get_json() == dict(firstName='Gene',
+                                       surname='Sid', cid='000000')
+
+    request_body = dict(firstName='Tom', surname='Sid', cid='000000')
+    response = web_client.put('/customers/000000', json=request_body)
+
+    assert response.is_json
+    assert response.status_code == 200
+    assert response.get_json() == dict(firstName='Tom',
+                                       surname='Sid', cid='000000')
 
 
 @patch('customer_service.model.commands.create_customer')

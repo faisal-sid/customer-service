@@ -10,3 +10,11 @@ def create_customer(first_name, surname, customer_repository):
     customer_repository.store(customer)
 
     return customer.customer_id
+
+
+def update_customer(first_name, surname, cid, customer_repository):
+    customer = customer_repository.fetch_by_id(cid)
+    customer.first_name = first_name
+    customer.surname = surname
+    customer_repository.store(customer)
+    return customer

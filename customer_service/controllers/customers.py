@@ -25,6 +25,23 @@ def get_customer(customer_id):
                    surname=customer.surname)
 
 
+@customers.route('/<string:customer_id>', methods=['PUT'])
+def update_customer(customer_id):
+    customer_repository = current_app.customer_repository
+
+    body = request.get_json()
+
+    commands.update_customer(
+        first_name=body['firstName'],
+        surname=body['surname'],
+        cid=body['cid'],
+        customer_repository=customer_repository)
+
+    return jsonify(
+        dict(firstName=body['firstName'],
+             surname=body['surname'], cid=body['cid']))
+
+
 @customers.route('/', methods=['POST'])
 def create_customer():
     customer_repository = current_app.customer_repository
@@ -63,4 +80,4 @@ class ContentTypeError(RuntimeError):
 @customers.errorhandler(ContentTypeError)
 def content_type_error(e):
     return jsonify(dict(message='Request must be application/json')), \
-           HTTPStatus.UNSUPPORTED_MEDIA_TYPE
+        HTTPStatus.UNSUPPORTED_MEDIA_TYPE

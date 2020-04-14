@@ -12,6 +12,7 @@ def create_customer(context, name, customer_id):
                         surname=surname)
 
     context.customer_repository.store(customer)
+    context.customer_id = customer_id
 
 
 @given('there is no customer with ID "99999"')
